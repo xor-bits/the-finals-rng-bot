@@ -1,7 +1,7 @@
 use std::{env, sync::Arc};
 
 use eyre::Result;
-use rand::{RngExt, rngs::ThreadRng};
+use rand::{RngExt, rngs::ThreadRng, seq::SliceRandom};
 use serenity::{
     Client,
     all::{
@@ -11,10 +11,9 @@ use serenity::{
     async_trait,
 };
 use tokio::{signal, sync::Mutex};
-use vello_common::paint::ImageId;
 
 use self::{
-    data::{Dataset, load_dataset},
+    data::{Dataset, Item, load_dataset},
     renderer::Renderer,
 };
 
@@ -24,9 +23,9 @@ pub mod renderer;
 
 pub struct Loadout<'a> {
     pub name: &'a str,
-    pub special: ImageId,
-    pub weapon: ImageId,
-    pub gadgets: [ImageId; 3],
+    pub special: Item,
+    pub weapon: Item,
+    pub gadgets: [Item; 3],
 }
 
 impl<'a> Loadout<'a> {
@@ -35,10 +34,10 @@ impl<'a> Loadout<'a> {
         let class = &dataset.classes[class];
 
         let special = rng.random_range(0..class.specials.len());
-        let special = class.specials[special];
+        let special = class.specials[special].clone();
 
         let weapon = rng.random_range(0..class.weapons.len());
-        let weapon = class.weapons[weapon];
+        let weapon = class.weapons[weapon].clone();
 
         let gadget_0 = rng.random_range(0..class.gadgets.len());
         let mut gadget_1 = rng.random_range(0..class.gadgets.len() - 1);
@@ -57,9 +56,9 @@ impl<'a> Loadout<'a> {
         }
 
         let gadgets = [
-            class.gadgets[gadget_0],
-            class.gadgets[gadget_1],
-            class.gadgets[gadget_2],
+            class.gadgets[gadget_0].clone(),
+            class.gadgets[gadget_1].clone(),
+            class.gadgets[gadget_2].clone(),
         ];
 
         Self {
@@ -157,6 +156,18 @@ async fn main() -> Result<()> {
     let mut renderer = Renderer::new()?;
     let dataset = load_dataset(&mut renderer.res).await?;
 
+    if false {
+        let mut rng = rand::rng();
+        let mut loadouts = [
+            "player 1", "player 2", "player 3", "player 4", "player 5", "player 6",
+        ]
+        .map(|name| Loadout::pick(&mut rng, name, &dataset));
+        loadouts.shuffle(&mut rng);
+        let png = renderer.render(&loadouts, Mode::Trios)?;
+        std::fs::write("out.png", png)?;
+        return Ok(());
+    }
+
     let handler = Arc::new(Handler {
         renderer: Mutex::new(renderer),
         dataset,
@@ -190,9 +201,9 @@ mod tests {
         for _ in 0..100000 {
             let loadout = Loadout::pick(&mut rng, "player", &dataset);
 
-            assert_ne!(loadout.gadgets[0], loadout.gadgets[1]);
-            assert_ne!(loadout.gadgets[0], loadout.gadgets[2]);
-            assert_ne!(loadout.gadgets[1], loadout.gadgets[2]);
+            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[1].image);
+            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[2].image);
+            assert_ne!(loadout.gadgets[1].image, loadout.gadgets[2].image);
         }
     }
 }

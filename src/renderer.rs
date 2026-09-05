@@ -48,6 +48,8 @@ const LAYOUT_PLAYER: &[Element] = &[
     Element::LoadoutName,
     Element::Padding(10),
     Element::Loadout,
+    // Element::Padding(2),
+    Element::LoadoutLabels,
     Element::Padding(10),
     //
 ];
@@ -73,6 +75,8 @@ enum Element {
     LoadoutName,
     /// only for team splits
     Loadout,
+    /// only for team splits
+    LoadoutLabels,
     /// only for loadout splits
     IconSpecial,
     /// only for loadout splits
@@ -87,6 +91,7 @@ impl Element {
             Self::Padding(p) => p,
             Self::Separator => 2,
             Self::LoadoutName => 48,
+            Self::LoadoutLabels => 16,
             Self::Teams | Self::Players => 0,
             _ => ICON_SIZE,
         }
@@ -216,10 +221,16 @@ impl Renderer {
                     //     (20.0, height),
                     //     AlphaColor::from_rgb8(0xff, 0x00, 0x00),
                     // );
+                    cursor.x += 20.0;
                     self.draw_text(cursor, loadout.name, 48.0);
+                    cursor.x = x;
                 }
                 Element::Loadout => {
                     self.draw_loadout(cursor, loadout);
+                    cursor.x = x;
+                }
+                Element::LoadoutLabels => {
+                    self.draw_loadout_labels(cursor, loadout);
                     cursor.x = x;
                 }
                 _ => {}
@@ -239,7 +250,7 @@ impl Renderer {
         let glyph_metrics = font_ref.glyph_metrics(Size::new(size), &location);
         let global_metrics = font_ref.metrics(Size::new(size), &location);
 
-        let mut cursor_x = cursor.x as f32 + 20.0;
+        let mut cursor_x = cursor.x as f32;
         // let y = cursor.y as f32;
         // let y = cursor.y as f32 + global_metrics.descent + global_metrics.ascent;
         let y = cursor.y as f32 - global_metrics.ascent
@@ -278,17 +289,58 @@ impl Renderer {
                     ));
                 }
                 Element::IconSpecial => {
-                    self.draw_image(loadout.special, (cursor.x, cursor.y), (width, height));
+                    self.draw_image(loadout.special.image, (cursor.x, cursor.y), (width, height));
                 }
                 Element::IconWeapon => {
-                    self.draw_image(loadout.weapon, (cursor.x, cursor.y), (width, height));
+                    self.draw_image(loadout.weapon.image, (cursor.x, cursor.y), (width, height));
                 }
                 Element::IconGadget(i) => {
                     self.draw_image(
-                        loadout.gadgets[*i as usize],
+                        loadout.gadgets[*i as usize].image,
                         (cursor.x, cursor.y),
                         (width, height),
                     );
+                }
+                _ => {}
+            }
+            cursor.x += width;
+        }
+    }
+
+    fn draw_loadout_labels(&mut self, cursor: &mut Cursor, loadout: &Loadout) {
+        for elem in LAYOUT_LOADOUT {
+            let width = elem.size() as f64;
+            match elem {
+                Element::Separator => {
+                    self.ctx.set_paint(elem.color());
+                    self.ctx.fill_rect(&Rect::from_points(
+                        (cursor.x, cursor.y),
+                        (cursor.x + width, cursor.y + 16.0),
+                    ));
+                }
+                Element::IconSpecial => {
+                    self.draw_rect(
+                        (cursor.x, cursor.y),
+                        (width, 16.0),
+                        Element::Separator.color(),
+                    );
+                    self.draw_text(cursor, &loadout.special.name, 16.0);
+                }
+                Element::IconWeapon => {
+                    self.draw_rect(
+                        (cursor.x, cursor.y),
+                        (width, 16.0),
+                        Element::Separator.color(),
+                    );
+                    self.draw_text(cursor, &loadout.weapon.name, 16.0);
+                }
+                Element::IconGadget(i) => {
+                    self.draw_rect(
+                        (cursor.x, cursor.y),
+                        (width, 16.0),
+                        Element::Separator.color(),
+                    );
+                    self.draw_text(cursor, &loadout.gadgets[*i as usize].name, 16.0);
                 }
                 _ => {}
             }

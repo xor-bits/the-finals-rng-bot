@@ -4,6 +4,7 @@ use std::{
     io::{BufReader, BufWriter, Cursor, Write},
     mem::swap,
     path::Path,
+    sync::Arc,
 };
 
 use eyre::Result;
@@ -20,9 +21,15 @@ pub struct Dataset {
 
 #[derive(Debug, Default)]
 pub struct Class {
-    pub weapons: Vec<ImageId>,
-    pub gadgets: Vec<ImageId>,
-    pub specials: Vec<ImageId>,
+    pub weapons: Vec<Item>,
+    pub gadgets: Vec<Item>,
+    pub specials: Vec<Item>,
+}
+
+#[derive(Debug, Clone)]
+pub struct Item {
+    pub image: ImageId,
+    pub name: Arc<str>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -132,7 +139,7 @@ fn build_class(class: &mut Class, contents: &mut ClassDesc, resources: &mut Reso
         (&mut contents.gadgets, &mut class.gadgets),
         (&mut contents.specializations, &mut class.specials),
     ] {
-        for item in category_in.values_mut() {
+        for (&name, item) in category_in.iter_mut() {
             let mut swapped_item = LoadedImage::None;
             swap(&mut swapped_item, &mut item.loaded);
 
@@ -144,7 +151,10 @@ fn build_class(class: &mut Class, contents: &mut ClassDesc, resources: &mut Reso
 
             item.loaded = LoadedImage::Id(item_id);
 
-            category_out.push(item_id);
+            category_out.push(Item {
+                image: item_id,
+                name: Arc::from(name),
+            });
         }
     }
 }
