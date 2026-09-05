@@ -1,128 +1,309 @@
+use std::{fs::File, io::Read, sync::Arc};
+
 use eyre::Result;
+use skrifa::{MetadataProvider, instance::Size};
 use vello_common::paint::ImageId;
 use vello_cpu::{
-    Image, ImageSource, Pixmap, RenderContext, Resources,
-    color::{AlphaColor, Srgb},
+    Glyph, Image, ImageSource, Pixmap, RenderContext, Resources,
+    color::{AlphaColor, Srgb, palette::css},
     kurbo::{Affine, Rect},
-    peniko::{Extend, ImageQuality, ImageSampler},
+    peniko::{Blob, Extend, FontData, ImageQuality, ImageSampler},
 };
 
-use crate::Loadout;
+use crate::{Loadout, Mode};
 
-const LAYOUT: &[LayoutElement] = &[
-    LayoutElement::Padding,
-    LayoutElement::Padding,
-    LayoutElement::IconSpecial,
-    LayoutElement::Padding,
-    LayoutElement::Separator,
-    LayoutElement::Padding,
-    LayoutElement::IconWeapon,
-    LayoutElement::Padding,
-    LayoutElement::Separator,
-    LayoutElement::Padding,
-    LayoutElement::IconGadget(0),
-    LayoutElement::Padding,
-    LayoutElement::IconGadget(1),
-    LayoutElement::Padding,
-    LayoutElement::IconGadget(2),
-    LayoutElement::Padding,
-    LayoutElement::Padding,
+const LAYOUT_LOADOUT: &[Element] = &[
+    Element::Padding(20),
+    Element::IconSpecial,
+    Element::Padding(10),
+    Element::Separator,
+    Element::Padding(10),
+    Element::IconWeapon,
+    Element::Padding(10),
+    Element::Separator,
+    Element::Padding(10),
+    Element::IconGadget(0),
+    Element::Padding(10),
+    Element::IconGadget(1),
+    Element::Padding(10),
+    Element::IconGadget(2),
+    Element::Padding(20),
 ];
-const ICON_SIZE: u16 = 128;
-const W: u16 = calculate_width(LAYOUT);
-const H: u16 = LayoutElement::Padding.height() + 2 * LayoutElement::Padding.width();
+const LAYOUT_MAIN: &[Element] = &[
+    // Element::Padding(20),
+    //
+    Element::Teams,
+    //
+    // Element::Padding(20),
+];
+const LAYOUT_TEAM: &[Element] = &[
+    Element::Padding(10),
+    //
+    Element::Players,
+    //
+    Element::Padding(10),
+];
+const LAYOUT_PLAYER: &[Element] = &[
+    Element::Padding(10),
+    Element::LoadoutName,
+    Element::Padding(10),
+    Element::Loadout,
+    Element::Padding(10),
+    //
+];
 
-#[derive(Clone, Copy)]
-enum LayoutElement {
-    Padding,
+const ICON_SIZE: u16 = 128;
+const W: u16 = calculate_width();
+const TEAM_COLORS: [AlphaColor<Srgb>; 4] = [
+    AlphaColor::from_rgb8(0x0d, 0x9c, 0xd5),
+    AlphaColor::from_rgb8(0xfa, 0x32, 0xa9),
+    AlphaColor::from_rgb8(0xec, 0x57, 0x18),
+    AlphaColor::from_rgb8(0x9b, 0x43, 0xec),
+];
+
+#[derive(Debug, Clone, Copy)]
+enum Element {
+    Padding(u16),
     Separator,
+    /// only for the main split
+    Teams,
+    /// only for the player splits
+    Players,
+    /// only for team splits
+    LoadoutName,
+    /// only for team splits
+    Loadout,
+    /// only for loadout splits
     IconSpecial,
+    /// only for loadout splits
     IconWeapon,
+    /// only for loadout splits
     IconGadget(u8),
 }
 
-impl LayoutElement {
-    pub const fn width(self) -> u16 {
+impl Element {
+    pub const fn size(self) -> u16 {
         match self {
-            LayoutElement::Padding => 10,
-            LayoutElement::Separator => 2,
+            Self::Padding(p) => p,
+            Self::Separator => 2,
+            Self::LoadoutName => 48,
+            Self::Teams | Self::Players => 0,
             _ => ICON_SIZE,
         }
     }
 
-    pub const fn height(self) -> u16 {
-        ICON_SIZE
-    }
-
     pub const fn color(self) -> AlphaColor<Srgb> {
         match self {
-            LayoutElement::Separator => AlphaColor::from_rgb8(0x40, 0x50, 0x5d),
+            Self::Separator => AlphaColor::from_rgb8(0x40, 0x50, 0x5d),
             _ => unreachable!(),
         }
     }
+}
+
+impl Mode {
+    pub const fn color(self) -> AlphaColor<Srgb> {
+        match self {
+            Mode::Duel => todo!(),
+            Mode::Trios => todo!(),
+            Mode::Quads => todo!(),
+        }
+    }
+}
+
+#[derive(Debug)]
+struct Cursor {
+    x: f64,
+    y: f64,
 }
 
 pub struct Renderer {
     ctx: RenderContext,
     pub res: Resources,
     // pub target: Pixmap,
+    font_data: FontData,
 }
 
 impl Renderer {
-    pub fn new() -> Self {
-        Self {
-            ctx: RenderContext::new(W, H),
+    pub fn new() -> Result<Self> {
+        let mut font_file = File::open("./asset/Roboto-Regular.ttf")?;
+        let mut buf = Vec::new();
+        _ = font_file.read_to_end(&mut buf)?;
+        let font_data = FontData::new(Blob::new(Arc::new(buf.into_boxed_slice())), 0);
+
+        Ok(Self {
+            ctx: RenderContext::new(W, 800),
             res: Resources::new(),
             // target: Pixmap::new(W, H),
-        }
+            font_data,
+        })
     }
 
-    pub fn render(&mut self, loadouts: &[Loadout]) -> Result<Vec<u8>> {
-        self.ctx.reset_and_resize(W, H);
-        // self.target.resize(W, H);
+    pub fn render(&mut self, loadouts: &[Loadout], mode: Mode) -> Result<Vec<u8>> {
+        let h = calculate_height(mode.teams(), loadouts.len());
+
+        self.ctx.reset_and_resize(W, h);
+        // self.target.resize(W, h);
 
         // NOTE: `Pixmap` only has `into_png` which consumes `target`
         // which forces this to deallocate and reallocate for no reason
-        let mut target = Pixmap::new(W, H);
+        let mut target = Pixmap::new(W, h);
 
-        self.ctx.set_paint(AlphaColor::from_rgb8(0x2c, 0x32, 0x3d));
-        self.ctx
-            .fill_rect(&Rect::from_points((0.0, 0.0), (W as f64, H as f64)));
+        // self.draw_rect(
+        //     (0.0, 0.0),
+        //     (W as f64, h as f64),
+        //     AlphaColor::from_rgb8(0x2c, 0x32, 0x3d),
+        // );
 
-        let mut cursor_x = 0.0;
-        let cursor_y = 10.0;
-        for elem in LAYOUT {
-            let width = elem.width() as f64;
-            let height = elem.height() as f64;
+        let mut cursor = Cursor { x: 0.0, y: 0.0 };
+        self.draw_main(&mut cursor, loadouts, mode);
+        assert_eq!(cursor.y as u16, h);
+
+        self.ctx.render(&mut target, &mut self.res);
+
+        Ok(target.into_png()?)
+    }
+
+    fn draw_main(&mut self, cursor: &mut Cursor, mut loadouts: &[Loadout], mode: Mode) {
+        let players = loadouts.len();
+        let teams = mode.teams();
+        let normal_team_players = players / teams;
+        let large_team_players = normal_team_players + 1;
+        let large_teams = players % teams;
+        let normal_teams = teams - large_teams;
+
+        let mut i = 0usize;
+        for elem in LAYOUT_MAIN {
+            let height = elem.size() as f64;
+
+            if let Element::Teams = elem {
+                for _ in 0..large_teams {
+                    let team;
+                    (team, loadouts) = loadouts.split_at(large_team_players);
+                    self.draw_team(cursor, team, i);
+                    i += 1;
+                }
+                for _ in 0..normal_teams {
+                    let team;
+                    (team, loadouts) = loadouts.split_at(normal_team_players);
+                    self.draw_team(cursor, team, i);
+                    i += 1;
+                }
+            }
+
+            cursor.y += height;
+        }
+    }
+
+    fn draw_team(&mut self, cursor: &mut Cursor, loadouts: &[Loadout], i: usize) {
+        self.draw_rect(
+            (0.0, cursor.y),
+            (W as f64, calculate_height_team(loadouts.len()) as f64),
+            TEAM_COLORS[i % TEAM_COLORS.len()],
+        );
+
+        for elem in LAYOUT_TEAM {
+            let height = elem.size() as f64;
+
+            if let Element::Players = elem {
+                for loadout in loadouts {
+                    self.draw_player(cursor, loadout);
+                }
+            }
+
+            cursor.y += height;
+        }
+    }
+
+    fn draw_player(&mut self, cursor: &mut Cursor, loadout: &Loadout) {
+        let x = cursor.x;
+        for elem in LAYOUT_PLAYER {
+            let height = elem.size() as f64;
+
             match elem {
-                LayoutElement::Separator => {
+                Element::LoadoutName => {
+                    // self.draw_rect(
+                    //     (cursor.x, cursor.y),
+                    //     (20.0, height),
+                    //     AlphaColor::from_rgb8(0xff, 0x00, 0x00),
+                    // );
+                    self.draw_text(cursor, loadout.name, 48.0);
+                }
+                Element::Loadout => {
+                    self.draw_loadout(cursor, loadout);
+                    cursor.x = x;
+                }
+                _ => {}
+            }
+
+            cursor.y += height;
+        }
+    }
+
+    fn draw_text(&mut self, cursor: &mut Cursor, text: &str, size: f32) {
+        let font_ref = skrifa::FontRef::new(self.font_data.data.data())
+            .expect("invalid font should have already been caught");
+
+        let axes = font_ref.axes();
+        let location = axes.location::<&[(&str, f32)]>(&[]);
+        let charmap = font_ref.charmap();
+        let glyph_metrics = font_ref.glyph_metrics(Size::new(size), &location);
+        let global_metrics = font_ref.metrics(Size::new(size), &location);
+
+        let mut cursor_x = cursor.x as f32 + 20.0;
+        // let y = cursor.y as f32;
+        // let y = cursor.y as f32 + global_metrics.descent + global_metrics.ascent;
+        let y = cursor.y as f32 - global_metrics.ascent
+            + global_metrics
+                .cap_height
+                .expect("invalid font should already been caight")
+            + size;
+
+        self.ctx.set_paint(css::WHITE);
+        self.ctx
+            .glyph_run(&mut self.res, &self.font_data)
+            .font_size(size)
+            .fill_glyphs(text.chars().filter(|&ch| ch != '\n').filter_map(move |ch| {
+                let id = charmap.map(ch)?;
+                let advance = glyph_metrics.advance_width(id)?;
+                let x = cursor_x;
+                cursor_x += advance;
+                Some(Glyph {
+                    id: id.to_u32(),
+                    x,
+                    y,
+                })
+            }));
+    }
+
+    fn draw_loadout(&mut self, cursor: &mut Cursor, loadout: &Loadout) {
+        for elem in LAYOUT_LOADOUT {
+            let width = elem.size() as f64;
+            let height = ICON_SIZE as f64;
+            match elem {
+                Element::Separator => {
                     self.ctx.set_paint(elem.color());
                     self.ctx.fill_rect(&Rect::from_points(
-                        (cursor_x, cursor_y),
-                        (cursor_x + width, cursor_y + height),
+                        (cursor.x, cursor.y),
+                        (cursor.x + width, cursor.y + height),
                     ));
                 }
-                LayoutElement::IconSpecial => {
-                    self.draw_image(loadouts[0].special, (cursor_x, cursor_y), (width, height));
+                Element::IconSpecial => {
+                    self.draw_image(loadout.special, (cursor.x, cursor.y), (width, height));
                 }
-                LayoutElement::IconWeapon => {
-                    self.draw_image(loadouts[0].weapon, (cursor_x, cursor_y), (width, height));
+                Element::IconWeapon => {
+                    self.draw_image(loadout.weapon, (cursor.x, cursor.y), (width, height));
                 }
-                LayoutElement::IconGadget(i) => {
+                Element::IconGadget(i) => {
                     self.draw_image(
-                        loadouts[0].gadgets[*i as usize],
-                        (cursor_x, cursor_y),
+                        loadout.gadgets[*i as usize],
+                        (cursor.x, cursor.y),
                         (width, height),
                     );
                 }
                 _ => {}
             }
-            cursor_x += width;
+            cursor.x += width;
         }
-
-        self.ctx.render(&mut target, &mut self.res);
-
-        Ok(target.into_png()?)
     }
 
     fn draw_image(&mut self, image: ImageId, at: (f64, f64), size: (f64, f64)) {
@@ -136,6 +317,11 @@ impl Renderer {
         self.ctx.set_paint_transform(transform);
         self.ctx
             .fill_rect(&Rect::from_points(at, (at.0 + size.0, at.1 + size.1)));
+    }
+
+    fn draw_rect(&mut self, at: (f64, f64), size: (f64, f64), color: AlphaColor<Srgb>) {
+        self.ctx.set_paint(color);
+        self.ctx.fill_rect(&Rect::from_origin_size(at, size));
     }
 }
 
@@ -151,13 +337,42 @@ fn sample_image(image: ImageId) -> Image {
     }
 }
 
-const fn calculate_width(layout: &[LayoutElement]) -> u16 {
+const fn calculate_width() -> u16 {
     let mut sum = 0;
 
     let mut i = 0usize;
-    while i < layout.len() {
-        sum += layout[i].width();
+    while i < LAYOUT_LOADOUT.len() {
+        sum += LAYOUT_LOADOUT[i].size();
         i += 1;
+    }
+
+    sum
+}
+
+fn calculate_height_team(players: usize) -> u16 {
+    let mut sum: u16 = 0;
+
+    for elem in LAYOUT_TEAM {
+        sum += elem.size();
+    }
+    for elem in LAYOUT_PLAYER {
+        sum += elem.size() * players as u16;
+    }
+
+    sum
+}
+
+fn calculate_height(teams: usize, players: usize) -> u16 {
+    let mut sum: u16 = 0;
+
+    for elem in LAYOUT_MAIN {
+        sum += elem.size();
+    }
+    for elem in LAYOUT_TEAM {
+        sum += elem.size() * teams as u16;
+    }
+    for elem in LAYOUT_PLAYER {
+        sum += elem.size() * players as u16;
     }
 
     sum

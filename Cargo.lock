@@ -1460,6 +1460,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "skrifa",
  "tokio",
  "vello_common",
  "vello_cpu",

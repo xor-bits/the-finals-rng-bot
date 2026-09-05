@@ -1,5 +1,5 @@
 use eyre::Result;
-use rand::{RngExt, rngs::ThreadRng};
+use rand::{RngExt, rngs::ThreadRng, seq::SliceRandom};
 use vello_common::paint::ImageId;
 
 use self::{data::load_dataset, renderer::Renderer};
@@ -7,15 +7,31 @@ use self::{data::load_dataset, renderer::Renderer};
 mod data;
 mod renderer;
 
-#[derive(Debug)]
-pub struct Loadout {
-    // pub player: &'a str,
+pub struct Loadout<'a> {
+    pub name: &'a str,
     pub special: ImageId,
     pub weapon: ImageId,
     pub gadgets: [ImageId; 3],
 }
 
-fn pick_loadout(rng: &mut ThreadRng, dataset: &data::Dataset) -> Loadout {
+#[derive(Clone, Copy)]
+pub enum Mode {
+    Duel,
+    Trios,
+    Quads,
+}
+
+impl Mode {
+    pub const fn teams(self) -> usize {
+        match self {
+            Mode::Duel => 2,
+            Mode::Trios => 3,
+            Mode::Quads => 4,
+        }
+    }
+}
+
+fn pick_loadout<'a>(rng: &mut ThreadRng, name: &'a str, dataset: &data::Dataset) -> Loadout<'a> {
     let class = rng.random_range(0..3);
     let class = &dataset.classes[class];
 
@@ -48,6 +64,7 @@ fn pick_loadout(rng: &mut ThreadRng, dataset: &data::Dataset) -> Loadout {
     ];
 
     Loadout {
+        name,
         special,
         weapon,
         gadgets,
@@ -56,11 +73,19 @@ fn pick_loadout(rng: &mut ThreadRng, dataset: &data::Dataset) -> Loadout {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let mut renderer = Renderer::new();
+    let mut renderer = Renderer::new()?;
     let dataset = load_dataset(&mut renderer.res).await?;
 
     let mut rng = rand::rng();
-    let result = renderer.render(&[pick_loadout(&mut rng, &dataset)])?;
+
+    let players = [
+        "player 1", "player 2", "player 3", "player 4", "player 5", "player 6",
+    ];
+    let mut loadouts = players.map(|name| pick_loadout(&mut rng, name, &dataset));
+
+    loadouts.shuffle(&mut rng);
+
+    let result = renderer.render(&loadouts, Mode::Trios)?;
 
     std::fs::write("out.png", result)?;
 
@@ -80,7 +105,7 @@ mod tests {
 
         let mut rng = rand::rng();
         for _ in 0..100000 {
-            let loadout = pick_loadout(&mut rng, &dataset);
+            let loadout = pick_loadout(&mut rng, "player", &dataset);
 
             assert_ne!(loadout.gadgets[0], loadout.gadgets[1]);
             assert_ne!(loadout.gadgets[0], loadout.gadgets[2]);
