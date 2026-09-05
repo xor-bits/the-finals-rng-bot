@@ -1,0 +1,23 @@
+FROM rust:1.98 AS builder
+
+WORKDIR /usr/src/the-finals-rng-bot
+RUN apt-get update && apt-get install -y musl-tools gcc
+RUN rustup target add x86_64-unknown-linux-musl
+
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs
+RUN cargo fetch
+RUN cargo install --path . --target x86_64-unknown-linux-musl
+RUN rm src/main.rs
+
+COPY src ./src/
+RUN touch src/main.rs
+RUN cargo install --path . --target x86_64-unknown-linux-musl
+
+FROM debian:bullseye-slim
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+COPY asset /asset/
+COPY dataset.json /
+COPY --from=builder /usr/local/cargo/bin/the-finals-rng-bot /usr/local/bin/the-finals-rng-bot
+
+CMD ["the-finals-rng-bot"]

@@ -1,3 +1,5 @@
 /target
 /cache
 out.png
+.env
+docker-compose.yml

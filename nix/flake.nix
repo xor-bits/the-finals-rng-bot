@@ -22,8 +22,10 @@
       {
         # `nix develop`
         devShells.default = pkgs.mkShell rec {
-          buildInputs = [
+          buildInputs = with pkgs; [
             toolchain
+            pkg-config
+            openssl
           ];
           LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath buildInputs}";
         };

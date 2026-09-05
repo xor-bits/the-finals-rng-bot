@@ -100,16 +100,6 @@ impl Element {
     }
 }
 
-impl Mode {
-    pub const fn color(self) -> AlphaColor<Srgb> {
-        match self {
-            Mode::Duel => todo!(),
-            Mode::Trios => todo!(),
-            Mode::Quads => todo!(),
-        }
-    }
-}
-
 #[derive(Debug)]
 struct Cursor {
     x: f64,
