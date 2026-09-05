@@ -7,6 +7,7 @@ use std::{
 };
 
 use eyre::Result;
+use reqwest::Certificate;
 use serde::Deserialize;
 use tokio::io::AsyncReadExt;
 use vello_common::paint::ImageId;
@@ -101,7 +102,14 @@ async fn load_item(cachedir: &Path, url: &str) -> Result<Pixmap> {
                 .await,
         )
     };
-    let fetch_png_future = async { reqwest::get(url).await?.bytes().await };
+
+    let mut client_builder = reqwest::Client::builder();
+    for cert in webpki_root_certs::TLS_SERVER_ROOT_CERTS {
+        client_builder = client_builder.add_root_certificate(Certificate::from_der(cert)?);
+    }
+    let client = client_builder.build()?;
+
+    let fetch_png_future = async { client.get(url).send().await?.bytes().await };
 
     let (cached_image_file, fetched_png) = tokio::join!(open_cache_future, fetch_png_future);
 

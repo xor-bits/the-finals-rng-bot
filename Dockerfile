@@ -15,7 +15,7 @@ RUN touch src/main.rs
 RUN cargo install --path . --target x86_64-unknown-linux-musl
 
 FROM debian:bullseye-slim
-RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && rm -rf /var/lib/apt/lists/*
 COPY asset /asset/
 COPY dataset.json /
 COPY --from=builder /usr/local/cargo/bin/the-finals-rng-bot /usr/local/bin/the-finals-rng-bot

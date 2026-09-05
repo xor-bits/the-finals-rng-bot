@@ -87,10 +87,6 @@
         "hr_img_url": "https://www.thefinals.wiki/w/images/d/dd/Thermal_Bore_Rank_1.png",
         "thumb_url": "https://www.thefinals.wiki/w/images/thumb/d/dd/Thermal_Bore_Rank_1.png/100px-Thermal_Bore_Rank_1.png.webp"
       },
-      "Thermal Vision": {
-        "hr_img_url": "https://www.thefinals.wiki/w/images/1/11/Thermal_Vision_Maintenance.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/1/11/Thermal_Vision_Maintenance.png/100px-Thermal_Vision_Maintenance.png.webp"
-      },
       "Tracking Dart": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/c9/Tracking_Dart_Rank_1.png",
         "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/c9/Tracking_Dart_Rank_1.png/100px-Tracking_Dart_Rank_1.png.webp"
@@ -196,10 +192,6 @@
       "Shockwave": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/6/66/Shockwave_Card.png",
         "thumb_url": "https://www.thefinals.wiki/w/images/thumb/6/66/Shockwave_Card.png/100px-Shockwave_Card.png.webp"
-      },
-      "Recon Senses": {
-        "hr_img_url": "https://www.thefinals.wiki/w/images/9/99/Recon_Senses_Maintenance.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/9/99/Recon_Senses_Maintenance.png/100px-Recon_Senses_Maintenance.png.webp"
       }
     }
   },
