@@ -166,16 +166,6 @@
         "thumb_url": "https://www.thefinals.wiki/w/images/thumb/0/0c/Riot_Shield_Rank_1.png/100px-Riot_Shield_Rank_1.png.webp"
       }
     },
-    "Gadgets": {
-      "Proximity Sensor": {
-        "hr_img_url": "https://www.thefinals.wiki/w/images/c/c9/Proximity_Sensor_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/c9/Proximity_Sensor_Rank_1.png/100px-Proximity_Sensor_Rank_1.png.webp"
-      },
-      "Explosive Mine": {
-        "hr_img_url": "https://www.thefinals.wiki/w/images/2/24/Explosive_Mine_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/2/24/Explosive_Mine_Rank_1.png/100px-Explosive_Mine_Rank_1.png.webp"
-      }
-    },
     "Specializations": {
       "Dematerializer": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/0/0d/Dematerializer_Rank_1.png",
