@@ -4,7 +4,6 @@ use std::{
     io::{BufReader, BufWriter, Cursor, Write},
     mem::swap,
     path::Path,
-    sync::Arc,
 };
 
 use eyre::Result;
@@ -26,31 +25,40 @@ pub struct Class {
     pub specials: Vec<Item>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Item {
     pub image: ImageId,
-    pub name: Arc<str>,
+    pub name: &'static str,
+}
+
+impl Item {
+    pub fn null() -> Self {
+        Self {
+            image: ImageId::new(0),
+            name: "",
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
-struct ClassDesc<'a> {
+struct ClassDesc {
     #[serde(default)]
     #[serde(rename = "Weapons")]
-    weapons: HashMap<&'a str, EntryDesc<'a>>,
+    weapons: HashMap<&'static str, EntryDesc>,
     #[serde(default)]
     #[serde(rename = "Gadgets")]
-    gadgets: HashMap<&'a str, EntryDesc<'a>>,
+    gadgets: HashMap<&'static str, EntryDesc>,
     #[serde(default)]
     #[serde(rename = "Specializations")]
-    specializations: HashMap<&'a str, EntryDesc<'a>>,
+    specializations: HashMap<&'static str, EntryDesc>,
 
     #[serde(default)]
-    __serde_lifetime_bugfix: &'a str,
+    __serde_lifetime_bugfix: &'static str,
 }
 
 #[derive(Debug, Deserialize)]
-struct EntryDesc<'a> {
-    hr_img_url: &'a str,
+struct EntryDesc {
+    hr_img_url: &'static str,
     #[serde(skip)]
     loaded: LoadedImage,
 }
@@ -153,7 +161,7 @@ fn build_class(class: &mut Class, contents: &mut ClassDesc, resources: &mut Reso
 
             category_out.push(Item {
                 image: item_id,
-                name: Arc::from(name),
+                name,
             });
         }
     }
@@ -189,8 +197,9 @@ pub async fn load_dataset(resources: &mut Resources) -> Result<Dataset> {
         .await?
         .read_to_string(&mut buf)
         .await?;
+    let buf = buf.leak();
 
-    let mut classes: HashMap<&str, ClassDesc> = serde_json::de::from_str(&buf)?;
+    let mut classes: HashMap<&str, ClassDesc> = serde_json::de::from_str(buf)?;
 
     let results = futures::future::join_all(
         classes
