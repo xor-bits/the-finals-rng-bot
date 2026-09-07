@@ -10,7 +10,7 @@ use vello_cpu::{
     peniko::{Blob, Extend, FontData, ImageQuality, ImageSampler},
 };
 
-use crate::{Loadout, Mode};
+use crate::Loadout;
 
 const LAYOUT_LOADOUT: &[Element] = &[
     Element::Padding(20),
@@ -30,13 +30,6 @@ const LAYOUT_LOADOUT: &[Element] = &[
     Element::Padding(20),
 ];
 const LAYOUT_MAIN: &[Element] = &[
-    // Element::Padding(20),
-    //
-    Element::Teams,
-    //
-    // Element::Padding(20),
-];
-const LAYOUT_TEAM: &[Element] = &[
     Element::Padding(10),
     //
     Element::Players,
@@ -56,7 +49,7 @@ const LAYOUT_PLAYER: &[Element] = &[
 
 const ICON_SIZE: u16 = 128;
 const W: u16 = calculate_width();
-const TEAM_COLORS: [AlphaColor<Srgb>; 4] = [
+pub const TEAM_COLORS: [AlphaColor<Srgb>; 4] = [
     AlphaColor::from_rgb8(0x0d, 0x9c, 0xd5),
     AlphaColor::from_rgb8(0xfa, 0x32, 0xa9),
     AlphaColor::from_rgb8(0xec, 0x57, 0x18),
@@ -67,8 +60,6 @@ const TEAM_COLORS: [AlphaColor<Srgb>; 4] = [
 enum Element {
     Padding(u16),
     Separator,
-    /// only for the main split
-    Teams,
     /// only for the player splits
     Players,
     /// only for team splits
@@ -91,8 +82,8 @@ impl Element {
             Self::Padding(p) => p,
             Self::Separator => 2,
             Self::LoadoutName => 48,
-            Self::LoadoutLabels => 16,
-            Self::Teams | Self::Players => 0,
+            Self::LoadoutLabels => 20,
+            Self::Players => 0,
             _ => ICON_SIZE,
         }
     }
@@ -133,8 +124,8 @@ impl Renderer {
         })
     }
 
-    pub fn render(&mut self, loadouts: &[Loadout], mode: Mode) -> Result<Vec<u8>> {
-        let h = calculate_height(mode.teams(), loadouts.len());
+    pub fn render(&mut self, loadouts: &[Loadout], team_index: usize) -> Result<Vec<u8>> {
+        let h = calculate_height(loadouts.len());
 
         self.ctx.reset_and_resize(W, h);
         // self.target.resize(W, h);
@@ -143,14 +134,14 @@ impl Renderer {
         // which forces this to deallocate and reallocate for no reason
         let mut target = Pixmap::new(W, h);
 
-        // self.draw_rect(
-        //     (0.0, 0.0),
-        //     (W as f64, h as f64),
-        //     AlphaColor::from_rgb8(0x2c, 0x32, 0x3d),
-        // );
+        self.draw_rect(
+            (0.0, 0.0),
+            (W as f64, h as f64),
+            TEAM_COLORS[team_index % TEAM_COLORS.len()],
+        );
 
         let mut cursor = Cursor { x: 0.0, y: 0.0 };
-        self.draw_main(&mut cursor, loadouts, mode);
+        self.draw_main(&mut cursor, loadouts);
         assert_eq!(cursor.y as u16, h);
 
         self.ctx.render(&mut target, &mut self.res);
@@ -158,45 +149,8 @@ impl Renderer {
         Ok(target.into_png()?)
     }
 
-    fn draw_main(&mut self, cursor: &mut Cursor, mut loadouts: &[Loadout], mode: Mode) {
-        let players = loadouts.len();
-        let teams = mode.teams();
-        let normal_team_players = players / teams;
-        let large_team_players = normal_team_players + 1;
-        let large_teams = players % teams;
-        let normal_teams = teams - large_teams;
-
-        let mut i = 0usize;
+    fn draw_main(&mut self, cursor: &mut Cursor, loadouts: &[Loadout]) {
         for elem in LAYOUT_MAIN {
-            let height = elem.size() as f64;
-
-            if let Element::Teams = elem {
-                for _ in 0..large_teams {
-                    let team;
-                    (team, loadouts) = loadouts.split_at(large_team_players);
-                    self.draw_team(cursor, team, i);
-                    i += 1;
-                }
-                for _ in 0..normal_teams {
-                    let team;
-                    (team, loadouts) = loadouts.split_at(normal_team_players);
-                    self.draw_team(cursor, team, i);
-                    i += 1;
-                }
-            }
-
-            cursor.y += height;
-        }
-    }
-
-    fn draw_team(&mut self, cursor: &mut Cursor, loadouts: &[Loadout], i: usize) {
-        self.draw_rect(
-            (0.0, cursor.y),
-            (W as f64, calculate_height_team(loadouts.len()) as f64),
-            TEAM_COLORS[i % TEAM_COLORS.len()],
-        );
-
-        for elem in LAYOUT_TEAM {
             let height = elem.size() as f64;
 
             if let Element::Players = elem {
@@ -310,37 +264,50 @@ impl Renderer {
     fn draw_loadout_labels(&mut self, cursor: &mut Cursor, loadout: &Loadout) {
         for elem in LAYOUT_LOADOUT {
             let width = elem.size() as f64;
+            let height = Element::LoadoutLabels.size() as f64;
             match elem {
                 Element::Separator => {
                     self.ctx.set_paint(elem.color());
                     self.ctx.fill_rect(&Rect::from_points(
                         (cursor.x, cursor.y),
-                        (cursor.x + width, cursor.y + 16.0),
+                        (cursor.x + width, cursor.y + height),
                     ));
                 }
                 Element::IconSpecial => {
                     self.draw_rect(
                         (cursor.x, cursor.y),
-                        (width, 16.0),
+                        (width, height),
                         Element::Separator.color(),
                     );
-                    self.draw_text(cursor, &loadout.special.name, 16.0);
+                    cursor.x += 2.0; // im sorry for your eyes
+                    cursor.y += 2.0;
+                    self.draw_text(cursor, loadout.special.name, 16.0);
+                    cursor.x -= 2.0;
+                    cursor.y -= 2.0;
                 }
                 Element::IconWeapon => {
                     self.draw_rect(
                         (cursor.x, cursor.y),
-                        (width, 16.0),
+                        (width, height),
                         Element::Separator.color(),
                     );
-                    self.draw_text(cursor, &loadout.weapon.name, 16.0);
+                    cursor.x += 2.0;
+                    cursor.y += 2.0;
+                    self.draw_text(cursor, loadout.weapon.name, 16.0);
+                    cursor.x -= 2.0;
+                    cursor.y -= 2.0;
                 }
                 Element::IconGadget(i) => {
                     self.draw_rect(
                         (cursor.x, cursor.y),
-                        (width, 16.0),
+                        (width, height),
                         Element::Separator.color(),
                     );
-                    self.draw_text(cursor, &loadout.gadgets[*i as usize].name, 16.0);
+                    cursor.x += 2.0;
+                    cursor.y += 2.0;
+                    self.draw_text(cursor, loadout.gadgets[*i as usize].name, 16.0);
+                    cursor.x -= 2.0;
+                    cursor.y -= 2.0;
                 }
                 _ => {}
             }
@@ -391,27 +358,11 @@ const fn calculate_width() -> u16 {
     sum
 }
 
-fn calculate_height_team(players: usize) -> u16 {
-    let mut sum: u16 = 0;
-
-    for elem in LAYOUT_TEAM {
-        sum += elem.size();
-    }
-    for elem in LAYOUT_PLAYER {
-        sum += elem.size() * players as u16;
-    }
-
-    sum
-}
-
-fn calculate_height(teams: usize, players: usize) -> u16 {
+fn calculate_height(players: usize) -> u16 {
     let mut sum: u16 = 0;
 
     for elem in LAYOUT_MAIN {
         sum += elem.size();
-    }
-    for elem in LAYOUT_TEAM {
-        sum += elem.size() * teams as u16;
     }
     for elem in LAYOUT_PLAYER {
         sum += elem.size() * players as u16;
