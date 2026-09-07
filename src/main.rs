@@ -152,11 +152,12 @@ impl EventHandler for Handler {
 #[tokio::main]
 async fn main() -> Result<()> {
     let token = env::var("TOKEN")?;
+    let test = env::var("TEST").is_ok();
 
     let mut renderer = Renderer::new()?;
     let dataset = load_dataset(&mut renderer.res).await?;
 
-    if false {
+    if test {
         let mut rng = rand::rng();
         let mut loadouts = [
             "player 1", "player 2", "player 3", "player 4", "player 5", "player 6",
