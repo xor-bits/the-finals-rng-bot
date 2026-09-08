@@ -13,19 +13,49 @@ use tokio::io::AsyncReadExt;
 use vello_common::paint::ImageId;
 use vello_cpu::{Pixmap, Resources};
 
-#[derive(Debug)]
+use crate::Gamemode;
+
 pub struct Dataset {
-    pub classes: [Class; 3],
+    classes_any: [Class; 3],
+    classes_melee: [Class; 3],
+    classes_shotgun: [Class; 3],
+    classes_auto: [Class; 3],
+    classes_semi: [Class; 3],
+    classes_bombs: [Class; 3],
 }
 
-#[derive(Debug, Default)]
+impl Dataset {
+    pub const fn class(&self, mode: Gamemode) -> &[Class; 3] {
+        match mode {
+            Gamemode::Any => &self.classes_any,
+            Gamemode::Melee => &self.classes_melee,
+            Gamemode::Shotgun => &self.classes_shotgun,
+            Gamemode::Auto => &self.classes_auto,
+            Gamemode::Semi => &self.classes_semi,
+            Gamemode::Bombs => &self.classes_bombs,
+        }
+    }
+
+    pub const fn class_mut(&mut self, mode: Gamemode) -> &mut [Class; 3] {
+        match mode {
+            Gamemode::Any => &mut self.classes_any,
+            Gamemode::Melee => &mut self.classes_melee,
+            Gamemode::Shotgun => &mut self.classes_shotgun,
+            Gamemode::Auto => &mut self.classes_auto,
+            Gamemode::Semi => &mut self.classes_semi,
+            Gamemode::Bombs => &mut self.classes_bombs,
+        }
+    }
+}
+
+#[derive(Default)]
 pub struct Class {
     pub weapons: Vec<Item>,
     pub gadgets: Vec<Item>,
     pub specials: Vec<Item>,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub struct Item {
     pub image: ImageId,
     pub name: &'static str,
@@ -40,7 +70,7 @@ impl Item {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 struct ClassDesc {
     #[serde(default)]
     #[serde(rename = "Weapons")]
@@ -56,14 +86,16 @@ struct ClassDesc {
     __serde_lifetime_bugfix: &'static str,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 struct EntryDesc {
     hr_img_url: &'static str,
+    #[serde(default)]
+    kind: Gamemode,
     #[serde(skip)]
     loaded: LoadedImage,
 }
 
-#[derive(Debug, Default)]
+#[derive(Default)]
 enum LoadedImage {
     #[default]
     None,
@@ -71,7 +103,7 @@ enum LoadedImage {
     Id(ImageId),
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 enum ClassKind {
     Light,
     Medium,
@@ -141,13 +173,24 @@ async fn load_item(cachedir: &Path, url: &str) -> Result<Pixmap> {
     Ok(pixmap)
 }
 
-fn build_class(class: &mut Class, contents: &mut ClassDesc, resources: &mut Resources) {
+fn build_class(
+    class: &mut Class,
+    contents: &mut ClassDesc,
+    resources: &mut Resources,
+    filter: Option<Gamemode>,
+) {
     for (category_in, category_out) in [
         (&mut contents.weapons, &mut class.weapons),
         (&mut contents.gadgets, &mut class.gadgets),
         (&mut contents.specializations, &mut class.specials),
     ] {
         for (&name, item) in category_in.iter_mut() {
+            if let Some(filter) = filter
+                && filter != item.kind
+            {
+                continue;
+            }
+
             let mut swapped_item = LoadedImage::None;
             swap(&mut swapped_item, &mut item.loaded);
 
@@ -172,6 +215,7 @@ fn build_any_class(
     contents: &mut ClassDesc,
     resources: &mut Resources,
     classes: &mut [Class; 3],
+    filter: Option<Gamemode>,
 ) {
     for name in names.split(',') {
         let kinds: &[ClassKind] = match name {
@@ -183,7 +227,7 @@ fn build_any_class(
         };
 
         for kind in kinds {
-            build_class(&mut classes[kind.id()], contents, resources);
+            build_class(&mut classes[kind.id()], contents, resources, filter);
         }
     }
 }
@@ -222,13 +266,33 @@ pub async fn load_dataset(resources: &mut Resources) -> Result<Dataset> {
         result?;
     }
 
-    let mut built_classes = [(); 3].map(|_| Class::default());
+    let mut dataset = Dataset {
+        classes_any: [(); 3].map(|_| Class::default()),
+        classes_melee: [(); 3].map(|_| Class::default()),
+        classes_shotgun: [(); 3].map(|_| Class::default()),
+        classes_auto: [(); 3].map(|_| Class::default()),
+        classes_semi: [(); 3].map(|_| Class::default()),
+        classes_bombs: [(); 3].map(|_| Class::default()),
+    };
 
-    for (&names, contents) in classes.iter_mut() {
-        build_any_class(names, contents, resources, &mut built_classes);
+    for filter in [
+        None,
+        Some(Gamemode::Melee),
+        Some(Gamemode::Shotgun),
+        Some(Gamemode::Auto),
+        Some(Gamemode::Semi),
+        Some(Gamemode::Bombs),
+    ] {
+        for (&names, contents) in classes.iter_mut() {
+            build_any_class(
+                names,
+                contents,
+                resources,
+                dataset.class_mut(filter.unwrap_or(Gamemode::Any)),
+                filter,
+            );
+        }
     }
 
-    Ok(Dataset {
-        classes: built_classes,
-    })
+    Ok(dataset)
 }

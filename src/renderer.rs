@@ -56,7 +56,7 @@ pub const TEAM_COLORS: [AlphaColor<Srgb>; 4] = [
     AlphaColor::from_rgb8(0x9b, 0x43, 0xec),
 ];
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 enum Element {
     Padding(u16),
     Separator,
@@ -96,7 +96,6 @@ impl Element {
     }
 }
 
-#[derive(Debug)]
 struct Cursor {
     x: f64,
     y: f64,

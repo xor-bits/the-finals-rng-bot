@@ -2,6 +2,7 @@ use std::{env, sync::Arc};
 
 use eyre::Result;
 use rand::{RngExt, rngs::ThreadRng, seq::SliceRandom};
+use serde::Deserialize;
 use serenity::{
     Client,
     all::{
@@ -21,17 +22,29 @@ pub mod cmd;
 pub mod data;
 pub mod renderer;
 
+#[derive(Clone, Copy)]
+pub enum LoadoutBias {
+    Fair,
+    NoHeavy,
+    OnlyHeavy,
+}
+
+#[derive(Default, Deserialize, Clone, Copy, PartialEq, Eq)]
+pub enum Gamemode {
+    #[default]
+    Any,
+    Melee,
+    Shotgun,
+    Auto,
+    Semi,
+    Bombs,
+}
+
 pub struct Loadout<'a> {
     pub name: &'a str,
     pub special: Item,
     pub weapon: Item,
     pub gadgets: [Item; 3],
-}
-
-pub enum LoadoutBias {
-    Fair,
-    NoHeavy,
-    OnlyHeavy,
 }
 
 impl<'a> Loadout<'a> {
@@ -49,23 +62,47 @@ impl<'a> Loadout<'a> {
         name: &'a str,
         dataset: &data::Dataset,
         bias: LoadoutBias,
+        mode: Gamemode,
     ) -> Self {
-        let class = match bias {
-            LoadoutBias::Fair => rng.random_range(0..3),
-            LoadoutBias::NoHeavy => rng.random_range(0..2),
-            LoadoutBias::OnlyHeavy => 2,
+        let mut class_low = 0;
+        let mut class_high = 2;
+        match bias {
+            LoadoutBias::NoHeavy => {
+                class_high = 1;
+            }
+            LoadoutBias::OnlyHeavy => {
+                class_low = 2;
+                class_high = 2;
+            }
+            _ => {}
+        }
+        match mode {
+            Gamemode::Bombs
+                // Light has no explosive weapons
+                if class_low == 0 => {
+                    class_low = 1;
+                }
+            _ => {}
+        }
+
+        let class = rng.random_range(class_low..=class_high);
+        let class_special = &dataset.class(Gamemode::Any)[class];
+        let class_weapon = &dataset.class(mode)[class];
+        let class_gadget = if mode == Gamemode::Bombs {
+            class_weapon
+        } else {
+            class_special
         };
-        let class = &dataset.classes[class];
 
-        let special = rng.random_range(0..class.specials.len());
-        let special = class.specials[special];
+        let special = rng.random_range(0..class_special.specials.len());
+        let special = class_special.specials[special];
 
-        let weapon = rng.random_range(0..class.weapons.len());
-        let weapon = class.weapons[weapon];
+        let weapon = rng.random_range(0..class_weapon.weapons.len());
+        let weapon = class_weapon.weapons[weapon];
 
-        let gadget_0 = rng.random_range(0..class.gadgets.len());
-        let mut gadget_1 = rng.random_range(0..class.gadgets.len() - 1);
-        let mut gadget_2 = rng.random_range(0..class.gadgets.len() - 2);
+        let gadget_0 = rng.random_range(0..class_gadget.gadgets.len());
+        let mut gadget_1 = rng.random_range(0..class_gadget.gadgets.len() - 1);
+        let mut gadget_2 = rng.random_range(0..class_gadget.gadgets.len() - 2);
 
         // messy `class.gadgets.sample(rng, 3)` without allocations or unpredictable loops
         // fixes duplicates without biased picks
@@ -80,9 +117,9 @@ impl<'a> Loadout<'a> {
         }
 
         let gadgets = [
-            class.gadgets[gadget_0],
-            class.gadgets[gadget_1],
-            class.gadgets[gadget_2],
+            class_gadget.gadgets[gadget_0],
+            class_gadget.gadgets[gadget_1],
+            class_gadget.gadgets[gadget_2],
         ];
 
         Self {
@@ -110,6 +147,7 @@ impl<'a> Teams<'a> {
         dataset: &Dataset,
         teams: u8,
         auto_balance: bool,
+        mode: Gamemode,
     ) -> Self {
         let mut player_iter = players.split(',');
 
@@ -141,13 +179,13 @@ impl<'a> Teams<'a> {
         let loadouts = names.map(|name| {
             let bias = if auto_balance && i < large_teams * large_team_players {
                 LoadoutBias::NoHeavy
-            } else if auto_balance {
+            } else if auto_balance && large_teams != 0 {
                 LoadoutBias::OnlyHeavy
             } else {
                 LoadoutBias::Fair
             };
             i += 1;
-            Loadout::pick(rng, name, dataset, bias)
+            Loadout::pick(rng, name, dataset, bias, mode)
         });
 
         Teams {
@@ -250,7 +288,7 @@ async fn main() -> Result<()> {
     if test {
         let mut rng = rand::rng();
         let players = "player 1,player 2,player 3,player 4,player 5,player 6,player 7";
-        let teams = Teams::pick(&mut rng, players, &dataset, 3, true);
+        let teams = Teams::pick(&mut rng, players, &dataset, 3, true, Gamemode::Melee);
 
         for (i, team) in teams.iter().enumerate() {
             let png = renderer.render(team, i)?;
@@ -282,7 +320,7 @@ async fn main() -> Result<()> {
 mod tests {
     use vello_cpu::Resources;
 
-    use crate::{Loadout, LoadoutBias, data::load_dataset};
+    use crate::{Gamemode, Loadout, LoadoutBias, data::load_dataset};
 
     #[tokio::test]
     async fn no_dupes() {
@@ -290,26 +328,26 @@ mod tests {
         let dataset = load_dataset(&mut res).await.unwrap();
 
         let mut rng = rand::rng();
-        for _ in 0..100000 {
-            let loadout = Loadout::pick(&mut rng, "player", &dataset, LoadoutBias::Fair);
-
-            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[1].image);
-            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[2].image);
-            assert_ne!(loadout.gadgets[1].image, loadout.gadgets[2].image);
-        }
-        for _ in 0..100000 {
-            let loadout = Loadout::pick(&mut rng, "player", &dataset, LoadoutBias::NoHeavy);
-
-            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[1].image);
-            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[2].image);
-            assert_ne!(loadout.gadgets[1].image, loadout.gadgets[2].image);
-        }
-        for _ in 0..100000 {
-            let loadout = Loadout::pick(&mut rng, "player", &dataset, LoadoutBias::OnlyHeavy);
-
-            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[1].image);
-            assert_ne!(loadout.gadgets[0].image, loadout.gadgets[2].image);
-            assert_ne!(loadout.gadgets[1].image, loadout.gadgets[2].image);
+        for mode in [
+            Gamemode::Any,
+            Gamemode::Melee,
+            Gamemode::Shotgun,
+            Gamemode::Auto,
+            Gamemode::Semi,
+            Gamemode::Bombs,
+        ] {
+            for bias in [
+                LoadoutBias::Fair,
+                LoadoutBias::NoHeavy,
+                LoadoutBias::OnlyHeavy,
+            ] {
+                for _ in 0..100000 {
+                    let loadout = Loadout::pick(&mut rng, "player", &dataset, bias, mode);
+                    assert_ne!(loadout.gadgets[0].image, loadout.gadgets[1].image);
+                    assert_ne!(loadout.gadgets[0].image, loadout.gadgets[2].image);
+                    assert_ne!(loadout.gadgets[1].image, loadout.gadgets[2].image);
+                }
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ use serenity::all::{
     CreateCommandOption, CreateEmbed, CreateInteractionResponseMessage, ResolvedValue,
 };
 
-use crate::{Handler, Teams, renderer};
+use crate::{Gamemode, Handler, Teams, renderer};
 
 pub fn register() -> CreateCommand {
     CreateCommand::new("start")
@@ -37,6 +37,16 @@ pub fn register() -> CreateCommand {
             )
             .required(false),
         )
+        .add_option(
+            CreateCommandOption::new(CommandOptionType::String, "mode", "game mode")
+                .required(false)
+                .add_string_choice("any", "any")
+                .add_string_choice("melee", "melee")
+                .add_string_choice("shotgun", "shotgun")
+                .add_string_choice("auto", "auto")
+                .add_string_choice("semi", "semi")
+                .add_string_choice("yes-rico-kaboom", "yes-rico-kaboom"),
+        )
 }
 
 pub async fn run(
@@ -47,12 +57,19 @@ pub async fn run(
     let mut players = None;
     let mut teams = None;
     let mut noautobalance = false;
+    let mut mode = Gamemode::Any;
 
     for opt in interaction.data.options() {
         match (opt.name, opt.value) {
             ("players", ResolvedValue::String(s)) => players = Some(s),
             ("teams", ResolvedValue::Integer(i)) => teams = Some(i),
             ("noautobalance", ResolvedValue::Boolean(b)) => noautobalance = b,
+            ("mode", ResolvedValue::String("any")) => mode = Gamemode::Any,
+            ("mode", ResolvedValue::String("melee")) => mode = Gamemode::Melee,
+            ("mode", ResolvedValue::String("shotgun")) => mode = Gamemode::Shotgun,
+            ("mode", ResolvedValue::String("auto")) => mode = Gamemode::Auto,
+            ("mode", ResolvedValue::String("semi")) => mode = Gamemode::Semi,
+            ("mode", ResolvedValue::String("yes-rico-kaboom")) => mode = Gamemode::Bombs,
             _ => {}
         }
     }
@@ -72,6 +89,7 @@ pub async fn run(
         &handler.dataset,
         teams,
         !noautobalance,
+        mode,
     );
 
     let mut renderer = handler.renderer.lock().await;

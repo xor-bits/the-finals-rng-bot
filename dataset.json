@@ -3,61 +3,75 @@
     "Weapons": {
       "93R": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/3/3d/93R_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/3d/93R_Rank_1.png/100px-93R_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/3d/93R_Rank_1.png/100px-93R_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "ARN-220": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/e/e0/ARN-220_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e0/ARN-220_Rank_1.png/100px-ARN-220_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e0/ARN-220_Rank_1.png/100px-ARN-220_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "Dagger": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/8/86/Dagger_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/8/86/Dagger_Rank_1.png/100px-Dagger_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/8/86/Dagger_Rank_1.png/100px-Dagger_Rank_1.png.webp",
+        "kind": "Melee"
       },
       "LH1": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/e/e2/LH1_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e2/LH1_Rank_1.png/100px-LH1_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e2/LH1_Rank_1.png/100px-LH1_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "M11": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/c3/M11_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/c3/M11_Rank_1.png/100px-M11_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/c3/M11_Rank_1.png/100px-M11_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "M26 Matter": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/3/3c/M26_Matter_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/3c/M26_Matter_Rank_1.png/100px-M26_Matter_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/3c/M26_Matter_Rank_1.png/100px-M26_Matter_Rank_1.png.webp",
+        "kind": "Shotgun"
       },
       "Recurve Bow": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/7/7f/Recurve_Bow_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/7f/Recurve_Bow_Rank_1.png/100px-Recurve_Bow_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/7f/Recurve_Bow_Rank_1.png/100px-Recurve_Bow_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "SH1900": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/a2/SH1900_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a2/SH1900_Rank_1.png/100px-SH1900_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a2/SH1900_Rank_1.png/100px-SH1900_Rank_1.png.webp",
+        "kind": "Shotgun"
       },
       "SR-84": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/0/0f/SR-84_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/0/0f/SR-84_Rank_1.png/100px-SR-84_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/0/0f/SR-84_Rank_1.png/100px-SR-84_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "Sword": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/cf/Sword_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cf/Sword_Rank_1.png/100px-Sword_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cf/Sword_Rank_1.png/100px-Sword_Rank_1.png.webp",
+        "kind": "Melee"
       },
       "Throwing Knives": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/ab/Throwing_Knives_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/ab/Throwing_Knives_Rank_1.png/100px-Throwing_Knives_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/ab/Throwing_Knives_Rank_1.png/100px-Throwing_Knives_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "V9S": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/7/7f/V9S_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/7f/V9S_Rank_1.png/100px-V9S_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/7f/V9S_Rank_1.png/100px-V9S_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "XP-54": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/f/f0/XP-54_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/f0/XP-54_Rank_1.png/100px-XP-54_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/f0/XP-54_Rank_1.png/100px-XP-54_Rank_1.png.webp",
+        "kind": "Auto"
       }
     },
     "Gadgets": {
       "Breach Charge": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/f/fc/Breach_Charge_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/fc/Breach_Charge_Rank_1.png/100px-Breach_Charge_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/fc/Breach_Charge_Rank_1.png/100px-Breach_Charge_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Gateway": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/c4/Gateway_Rank_1.png",
@@ -85,7 +99,8 @@
       },
       "Thermal Bore": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/d/dd/Thermal_Bore_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/d/dd/Thermal_Bore_Rank_1.png/100px-Thermal_Bore_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/d/dd/Thermal_Bore_Rank_1.png/100px-Thermal_Bore_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Tracking Dart": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/c9/Tracking_Dart_Rank_1.png",
@@ -99,15 +114,18 @@
     "Specializations": {
       "Cloaking Device": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/b/b0/Cloaking_Device_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b0/Cloaking_Device_Rank_1.png/100px-Cloaking_Device_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b0/Cloaking_Device_Rank_1.png/100px-Cloaking_Device_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Evasive Dash": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/4/42/Evasive_Dash_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/4/42/Evasive_Dash_Rank_1.png/100px-Evasive_Dash_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/4/42/Evasive_Dash_Rank_1.png/100px-Evasive_Dash_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Grappling Hook": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/b/b4/Grappling_Hook_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b4/Grappling_Hook_Rank_1.png/100px-Grappling_Hook_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b4/Grappling_Hook_Rank_1.png/100px-Grappling_Hook_Rank_1.png.webp",
+        "kind": "Bombs"
       }
     }
   },
@@ -115,61 +133,75 @@
     "Weapons": {
       "AKM": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/5/55/AKM_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/5/55/AKM_Rank_1.png/100px-AKM_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/5/55/AKM_Rank_1.png/100px-AKM_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "CB-01 Repeater": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/3/30/CB-01_Repeater_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/30/CB-01_Repeater_Rank_1.png/100px-CB-01_Repeater_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/30/CB-01_Repeater_Rank_1.png/100px-CB-01_Repeater_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "Cerberus 12GA": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/8/8e/Cerberus_12GA_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/8/8e/Cerberus_12GA_Rank_1.png/100px-Cerberus_12GA_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/8/8e/Cerberus_12GA_Rank_1.png/100px-Cerberus_12GA_Rank_1.png.webp",
+        "kind": "Shotgun"
       },
       "Chimera-XB": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/ae/Chimera-XB_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/ae/Chimera-XB_Rank_1.png/100px-Chimera-XB_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/ae/Chimera-XB_Rank_1.png/100px-Chimera-XB_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "CL-40": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/b/b3/CL-40_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b3/CL-40_Rank_1.png/100px-CL-40_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b3/CL-40_Rank_1.png/100px-CL-40_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Dual Blades": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/cb/Dual_Blades_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cb/Dual_Blades_Rank_1.png/100px-Dual_Blades_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cb/Dual_Blades_Rank_1.png/100px-Dual_Blades_Rank_1.png.webp",
+        "kind": "Melee"
       },
       "FAMAS": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/4/45/FAMAS_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/4/45/FAMAS_Rank_1.png/100px-FAMAS_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/4/45/FAMAS_Rank_1.png/100px-FAMAS_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "FCAR": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/a8/FCAR_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a8/FCAR_Rank_1.png/100px-FCAR_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a8/FCAR_Rank_1.png/100px-FCAR_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "Model 1887": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/e/ed/Model_1887_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/ed/Model_1887_Rank_1.png/100px-Model_1887_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/ed/Model_1887_Rank_1.png/100px-Model_1887_Rank_1.png.webp",
+        "kind": "Shotgun"
       },
       "P90": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/6/6c/P90_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/6/6c/P90_Rank_1.png/100px-P90_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/6/6c/P90_Rank_1.png/100px-P90_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "Pike-556": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/3/34/Pike-556_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/34/Pike-556_Rank_1.png/100px-Pike-556_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/34/Pike-556_Rank_1.png/100px-Pike-556_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "R .357": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/3/37/R_.357_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/37/R_.357_Rank_1.png/100px-R_.357_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/37/R_.357_Rank_1.png/100px-R_.357_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "Riot Shield": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/0/0c/Riot_Shield_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/0/0c/Riot_Shield_Rank_1.png/100px-Riot_Shield_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/0/0c/Riot_Shield_Rank_1.png/100px-Riot_Shield_Rank_1.png.webp",
+        "kind": "Melee"
       }
     },
     "Specializations": {
       "Dematerializer": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/0/0d/Dematerializer_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/0/0d/Dematerializer_Rank_1.png/100px-Dematerializer_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/0/0d/Dematerializer_Rank_1.png/100px-Dematerializer_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Guardian Turret": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/a7/Guardian_Turret_Card.png",
@@ -177,11 +209,13 @@
       },
       "Healing Beam": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/b/b5/Healing_Beam_Card.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b5/Healing_Beam_Card.png/100px-Healing_Beam_Card.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b5/Healing_Beam_Card.png/100px-Healing_Beam_Card.png.webp",
+        "kind": "Bombs"
       },
       "Shockwave": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/6/66/Shockwave_Card.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/6/66/Shockwave_Card.png/100px-Shockwave_Card.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/6/66/Shockwave_Card.png/100px-Shockwave_Card.png.webp",
+        "kind": "Bombs"
       }
     }
   },
@@ -189,51 +223,63 @@
     "Weapons": {
       ".50 Akimbo": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/5/5a/.50_Akimbo_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/5/5a/.50_Akimbo_Rank_1.png/100px-.50_Akimbo_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/5/5a/.50_Akimbo_Rank_1.png/100px-.50_Akimbo_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "BFR Titan": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/1/1f/BFR_Titan_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/1/1f/BFR_Titan_Rank_1.png/100px-BFR_Titan_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/1/1f/BFR_Titan_Rank_1.png/100px-BFR_Titan_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "Flamethrower": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/5/50/Flamethrower_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/5/50/Flamethrower_Rank_1.png/100px-Flamethrower_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/5/50/Flamethrower_Rank_1.png/100px-Flamethrower_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "KS-23": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/f/f4/KS-23_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/f4/KS-23_Rank_1.png/100px-KS-23_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/f4/KS-23_Rank_1.png/100px-KS-23_Rank_1.png.webp",
+        "kind": "Semi"
       },
       "Lewis Gun": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/1/14/Lewis_Gun_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/1/14/Lewis_Gun_Rank_1.png/100px-Lewis_Gun_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/1/14/Lewis_Gun_Rank_1.png/100px-Lewis_Gun_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "M134 Minigun": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/9/96/M134_Minigun_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/9/96/M134_Minigun_Rank_1.png/100px-M134_Minigun_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/9/96/M134_Minigun_Rank_1.png/100px-M134_Minigun_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "M60": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/a6/M60_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a6/M60_Rank_1.png/100px-M60_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a6/M60_Rank_1.png/100px-M60_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "MGL32": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/b/b1/MGL32_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b1/MGL32_Rank_1.png/100px-MGL32_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/b/b1/MGL32_Rank_1.png/100px-MGL32_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "SA1216": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/cb/SA1216_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cb/SA1216_Rank_1.png/100px-SA1216_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cb/SA1216_Rank_1.png/100px-SA1216_Rank_1.png.webp",
+        "kind": "Shotgun"
       },
       "ShAK-50": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/f/fb/ShAK-50_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/fb/ShAK-50_Rank_1.png/100px-ShAK-50_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/f/fb/ShAK-50_Rank_1.png/100px-ShAK-50_Rank_1.png.webp",
+        "kind": "Auto"
       },
       "Sledgehammer": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/cb/Sledgehammer_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cb/Sledgehammer_Rank_1.png/100px-Sledgehammer_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/c/cb/Sledgehammer_Rank_1.png/100px-Sledgehammer_Rank_1.png.webp",
+        "kind": "Melee"
       },
       "Spear": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/3/37/Spear_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/37/Spear_Rank_1.png/100px-Spear_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/3/37/Spear_Rank_1.png/100px-Spear_Rank_1.png.webp",
+        "kind": "Melee"
       }
     },
     "Gadgets": {
@@ -247,7 +293,8 @@
       },
       "C4": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/a3/C4_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a3/C4_Rank_1.png/100px-C4_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/a/a3/C4_Rank_1.png/100px-C4_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Dome Shield": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/c/cd/Dome_Shield_Rank_1.png",
@@ -263,29 +310,35 @@
       },
       "Pyro Mine": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/2/23/Pyro_Mine_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/2/23/Pyro_Mine_Rank_1.png/100px-Pyro_Mine_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/2/23/Pyro_Mine_Rank_1.png/100px-Pyro_Mine_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "RPG-7": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/7/7a/RPG-7_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/7a/RPG-7_Rank_1.png/100px-RPG-7_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/7a/RPG-7_Rank_1.png/100px-RPG-7_Rank_1.png.webp",
+        "kind": "Bombs"
       }
     },
     "Specializations": {
       "Charge 'N' Slam": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/4/45/Charge_N_Slam_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/4/45/Charge_N_Slam_Rank_1.png/100px-Charge_N_Slam_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/4/45/Charge_N_Slam_Rank_1.png/100px-Charge_N_Slam_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Goo Gun": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/2/2d/Goo_Gun_Card.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/2/2d/Goo_Gun_Card.png/100px-Goo_Gun_Card.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/2/2d/Goo_Gun_Card.png/100px-Goo_Gun_Card.png.webp",
+        "kind": "Bombs"
       },
       "Mesh Shield": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/e/e9/Mesh_Shield_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e9/Mesh_Shield_Rank_1.png/100px-Mesh_Shield_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e9/Mesh_Shield_Rank_1.png/100px-Mesh_Shield_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Winch Claw": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/e/e0/Winch_Claw_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e0/Winch_Claw_Rank_1.png/100px-Winch_Claw_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/e/e0/Winch_Claw_Rank_1.png/100px-Winch_Claw_Rank_1.png.webp",
+        "kind": "Bombs"
       }
     }
   },
@@ -297,7 +350,8 @@
       },
       "Frag Grenade": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/7/78/Frag_Grenade_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/78/Frag_Grenade_Rank_1.png/100px-Frag_Grenade_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/7/78/Frag_Grenade_Rank_1.png/100px-Frag_Grenade_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Gas Grenade": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/a/a4/Gas_Grenade_Rank_1.png",
@@ -309,7 +363,8 @@
       },
       "Pyro Grenade": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/d/dc/Pyro_Grenade_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/d/dc/Pyro_Grenade_Rank_1.png/100px-Pyro_Grenade_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/d/dc/Pyro_Grenade_Rank_1.png/100px-Pyro_Grenade_Rank_1.png.webp",
+        "kind": "Bombs"
       },
       "Smoke Grenade": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/e/ee/Smoke_Grenade_Rank_1.png",
@@ -325,7 +380,8 @@
       },
       "Explosive Mine": {
         "hr_img_url": "https://www.thefinals.wiki/w/images/2/24/Explosive_Mine_Rank_1.png",
-        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/2/24/Explosive_Mine_Rank_1.png/100px-Explosive_Mine_Rank_1.png.webp"
+        "thumb_url": "https://www.thefinals.wiki/w/images/thumb/2/24/Explosive_Mine_Rank_1.png/100px-Explosive_Mine_Rank_1.png.webp",
+        "kind": "Bombs"
       }
     }
   }
